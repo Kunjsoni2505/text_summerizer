@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+   <script>
+        function increaseRows() {
+            var textarea = document.getElementById("id_text");
+            textarea.rows = 14;  // Increase rows to 10 on focus
+        }
+
+        function resetRows() {
+            var textarea = document.getElementById("id_text");
+            textarea.rows = 4;  // Reset rows back to 5 when focus is lost
+        }
+    </script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            background-image: url('/static/istockphoto-1954841243-2048x2048.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        /* Shiny Glassy Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0.2)
+            );
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        /* Heading Styles */
+        .main-heading {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .main-heading h1 {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: #333;
+            font-size: 5rem; /* Enlarge the heading */
+        }
+
+        .main-heading h1 span {
+            display: block;
+        }
+
+        .main-heading .line1 {
+            font-size: 2rem; /* Smaller font for 'Let's' */
+            margin-left: -30px; /* Shift 'Let's' to the left */
+        }
+
+        .main-heading .line2 {
+            font-size: 4.5rem;
+            font-weight: bold;
+        }
+
+        .main-heading .line3 {
+            font-size: 2rem;
+        }
+
+        /* Form Styles */
+        .form-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .form {
+            max-width: 500px;
+            width: 90%;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            margin: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .form:hover {
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        form input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            color: #333;
+        }
+
+        form input[type="text"]:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        form input[type="text"]:focus {
+            border-color: #3f51b5;
+            box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(1.1);
+        }
+
+        form button {
+            background: rgba(255, 255, 255, 0.2);
+            color: #2c3e50;
+            padding: 14px 28px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        form button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            color: #1abc9c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            margin-top: 40px;
+        }
+
+        .result-container h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .result-container p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .main-heading h1 {
+                font-size: 3rem;
+            }
+
+            .form {
+                width: 90%;
+                padding: 20px;
+            }
+
+            form button {
+                padding: 12px;
+            }
+        }
+        #id_text{
+        width: 100%;
+        }
+        .p-5{
+        padding: 5px;
+        }
+        #range{
+        height: 25px;
+        padding: 2 5px;
+        margin: 10px 10px 0 10px;
+        }
+        input:focus,
+        textarea:focus {
+        outline: none;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="main-container">
+        <div class="main-heading">
+            <h1>
+                <span class="line1">Let's</span>
+                <span class="line2">Summarize</span>
+                <span class="line3">Your Text</span>
+            </h1>
+        </div>
+
+        <div class="form-container">
+            <div class="form">
+                <form method="post" action="{% url 'summarize_text' %}">
+                    {% csrf_token %}
+<!--                    {{ form.as_p }}-->
+                    <label>Enter your Text:</label>
+                    <textarea id="id_text" class="p-5" rows="4" name="text" onmouseover="increaseRows()" onmouseleave="resetRows()" placeholder="Enter Text"></textarea>
+                    <div style="display: flex;">
+                        <p>in</p>
+                        <input id="range" type="number" min="0" max="1000" name="Range" placeholder="Range" ></input>
+                        <p>words</p>
+                    </div>
+                    <button type="submit">Summarize</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if summary %}
+    <div class="result-container">
+        <h2>Summary:</h2>
+        <p>{{ summary }}</p>
+    </div>
+    {% endif %}
+
+</body>
+</html>
