@@ -5,7 +5,7 @@ import google.generativeai as genai  # Import the Gemini API library
 from .forms import TextForm  # Updated to use a TextForm for general text input
 
 # Set up Gemini API
-GOOGLE_API_KEY = "AIzaSyAz2e2mKPepUUkUWwQkoD41zCjcKqvjL0s"
+GOOGLE_API_KEY = " " // add your api
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Function to call Gemini API for summarization
